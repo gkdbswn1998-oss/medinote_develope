@@ -22,7 +22,12 @@ public enum ErrorCode {
 
     //파일 업로드 관련
     FILE_SIZE_EXCEEDED(413, "F001", "업로드 가능한 파일 용량(15MB)을 초과했습니다."),
-    FILE_UPLOAD_FAILED(500, "F002", "파일 업로드 중 오류가 발생했습니다.");
+    FILE_UPLOAD_FAILED(500, "F002", "파일 업로드 중 오류가 발생했습니다."),
+
+    //관리자 및 권한·프로필 관련
+    ADMIN_ONLY(403, "A001", "관리자만 접근 가능합니다."),
+    NOT_PHARMACIST_ACCOUNT(400, "A002", "약사 계정이 아닙니다."),
+    PHARMACIST_PROFILE_NOT_FOUND(404, "U008", "약사 프로필이 존재하지 않습니다.");
 
     private final int status;
     private final String code;
