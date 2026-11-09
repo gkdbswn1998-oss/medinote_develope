@@ -108,14 +108,15 @@ flowchart LR
 
 | 발견한 문제 | 개선 |
 |---|---|
+| 관리자 전체 회원·승인 대기 약사 조회 시 연관 엔티티(`UserProfileHealth`, `UserChronicDisease`, `PharmacistProfile`) 반복 조회로 **N+1 쿼리** 발생 | `JOIN FETCH` (`findAllWithDetails`, `findPendingPharmacistsWithProfile`)를 적용해 단건 쿼리로 최적화 |
+| 일부 서비스(`AdminService`, `AuthService`)에서 `RuntimeException`을 직접 던져 500 에러가 노출되고 예외 규격이 불일치 | `@RestControllerAdvice` + `ErrorCode` Enum 기반 `CustomException`으로 글로벌 예외 처리 규격(`ErrorResponse`) 통일 및 필드 순서 버그 수정 |
 | 역할만 확인해서 다른 약사도 환자 정보를 조회할 수 있음 | 해당 상담방의 담당 약사만 조회 가능 (그 외 403) |
 | 메시지 발신자 정보를 클라이언트가 직접 보내 위조 가능 | 발신자를 JWT 기준으로 설정 |
 | 내부 API가 게이트웨이를 통해 외부에 노출 | Nginx에서 `/api/internal/` 차단 |
 | Nginx와 Spring의 업로드 한도가 서로 달라 원인 파악이 어려움 | 15MB로 통일, 초과 시 413 응답 |
 | S3 이미지 삭제가 실제로 호출되지 않음 | 삭제 호출 추가 |
-| 에러 응답의 `code`와 `message`가 뒤바뀌어 표시 | 필드명 기반 빌더로 수정 |
 
-단위 테스트 12개를 추가하고, Docker로 전체 백엔드를 띄워 실제 요청 20개 항목을 검증했습니다.
+JUnit 5 단위 테스트(`AdminServiceTest`, `GlobalExceptionHandlerTest`, `StompAuthChannelInterceptorTest`, `ConsultationServicePatientInfoTest` 등)를 작성하고, Docker로 전체 백엔드를 띄워 실제 요청을 검증했습니다.
 
 <br>
 

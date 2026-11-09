@@ -78,7 +78,7 @@ public class AuthService {
     public void addUserProfile(String email, UserProfileRequest userProfileRequest) {
         // 해시 검색으로 유저 조회
         User user = userRepository.findByEmailHash(encryptionUtils.hash(email))
-                .orElseThrow(() -> new RuntimeException("유저 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         UserProfileHealth health = UserProfileHealth.builder()
                 .user(user)
@@ -120,7 +120,7 @@ public class AuthService {
     @Transactional
     public void addPharmacistProfile(String email, PharmacistVerifyRequest pharmacistVerifyRequest, MultipartFile image) {
         User user = userRepository.findByEmailHash(encryptionUtils.hash(email))
-                .orElseThrow(() -> new RuntimeException("유저 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 실제 S3에 이미지 업로드
         String imageUrl = s3Service.upload(image);
@@ -313,7 +313,7 @@ public class AuthService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         PharmacistProfile profile = pharmacistProfileRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("약사 프로필이 존재하지 않습니다"));
+                .orElseThrow(() -> new CustomException(ErrorCode.PHARMACIST_PROFILE_NOT_FOUND));
 
         String imageUrl = profile.getLicenseImage();
         if (image != null && !image.isEmpty()) {
